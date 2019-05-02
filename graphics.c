@@ -1,86 +1,85 @@
 #include "graphics.h"
+
+#include <locale.h>
+#include <stdio.h>
 #include <Windows.h>
 
-#define FRAME_BUFFER_COUNT 2
+static wchar_t* frame_buffer;
+static Vector2 frame_buffer_size;
 
-/*
-Internal Variables
-*/
-static HANDLE frame_buffer[FRAME_BUFFER_COUNT];
-static int frame_cursor;
+void HideConsoleCursor();
+void ResizeWindow(int width, int height);
+void CreateFrameBuffer(int width, int height);
 
-static int frame_buffer_width;
-static int frame_buffer_height;
-
-/*
-Internal Function Declares
-*/
-HANDLE CreateFrameBuffer(int width, int height);
-
-/*
-External Function Definition
-*/
-int InitGraphics(int width, int height)
+void InitGraphics(int width, int height)
 {
-	for (int i = 0; i < FRAME_BUFFER_COUNT; ++i)
-	{
-		frame_buffer[i] = CreateBuffer(width, height);
-		if (!frame_buffer[i])
-			return 0;
-	}
+	setlocale(LC_ALL, "");
 
-	frame_buffer_width = width;
-	frame_buffer_height = height;
-
-	return 1;
+	HideConsoleCursor();
+	CreateFrameBuffer(width, height);
+	ResizeWindow(width, height);
 }
 
-void CloseGraphics()
+void ReleaseGraphics()
 {
-	for (int i = 0; i < FRAME_BUFFER_COUNT; ++i)
+	free(frame_buffer);
+}
+
+void DrawObject(wchar_t object, Vector2 position)
+{
+	// 버퍼의 범위를 벗어난 위치에 들어오면 그리지 않는다.
+	if (position.x < 0 || position.x > frame_buffer_size.x || position.y < 0 || position.y > frame_buffer_size.y)
+		return;
+
+	frame_buffer[(int)(position.y * frame_buffer_size.x + position.x)] = object;
+}
+
+void PresentGraphics()
+{
+	GotoConsoleCursor(0, 0);
+	for (int y = 0; y < frame_buffer_size.y; ++y)
 	{
-		if (frame_buffer[i])
-			CloseHandle(frame_buffer[i]);
+		for (int x = 0; x < frame_buffer_size.x; ++x)
+			printf("%lc", frame_buffer[(int)(y * frame_buffer_size.x + x)]);
 	}
 }
 
-void ClearFrameBuffer()
+Vector2 GetWindowSize()
 {
-	COORD start_position = { 0, 0 };
-	FillConsoleOutputCharacterA(frame_buffer, ' ', frame_buffer_width * frame_buffer_height, start_position, NULL);
+	return frame_buffer_size;
 }
 
-void WriteFrameBuffer(char* string, int size, int x, int y)
+void GotoConsoleCursor(int x, int y)
 {
 	COORD position = { x, y };
-	SetConsoleCursorPosition(frame_buffer[frame_cursor], position);
-	WriteFile(frame_buffer[frame_cursor], string, size, NULL, NULL);
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), position);
 }
 
-void SwapFrameBuffer()
+void HideConsoleCursor()
 {
-	SetConsoleActiveScreenBuffer(frame_buffer[frame_cursor]);
-	frame_cursor != frame_cursor;
+	CONSOLE_CURSOR_INFO cci;
+	cci.dwSize = 1;
+	cci.bVisible = FALSE;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cci);
 }
 
-/*
-Internal Function Definition
-*/
-HANDLE CreateFrameBuffer(int width, int height)
+void ResizeWindow(int width, int height)
 {
-	COORD buffer_size = { width, height };
-	SMALL_RECT window_size;
-	window_size.Top = 0;
-	window_size.Left = 0;
-	window_size.Right = width - 1;
-	window_size.Bottom = height - 1;
+	char command[64];
+	sprintf_s(command, 64, "mode con: cols=%d lines=%d", width, height);
+	system(command);
+}
 
-	HANDLE frame_buffer = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
-	if (frame_buffer == INVALID_HANDLE_VALUE)
-		return NULL;
+void CreateFrameBuffer(int width, int height)
+{
+	int size = sizeof(wchar_t) * width * height;
+	frame_buffer = (wchar_t*)malloc(size);
 
-	SetConsoleScreenBufferSize(frame_buffer, buffer_size);
-	SetConsoleWindowInfo(frame_buffer, TRUE, &window_size);
+	if (!frame_buffer)
+		return;
 
-	return frame_buffer;
+	memset(frame_buffer, 0, size);
+
+	frame_buffer_size.x = width;
+	frame_buffer_size.y = height;
 }

@@ -36,7 +36,7 @@ void TickTimer(Timer* timer)
 	QueryPerformanceCounter((LARGE_INTEGER*)&curr_time);
 	
 	timer->curr_time = curr_time;
-	timer->delta_time = (timer->curr_time - timer->prev_time) * timer->seconds_per_count;
+	timer->delta_time = (float)((timer->curr_time - timer->prev_time) * timer->seconds_per_count);
 	timer->prev_time = timer->curr_time;
 }
 
@@ -47,7 +47,7 @@ void ResetTimer(Timer* timer)
 
 	timer->base_time = curr_time;
 	timer->prev_time = curr_time;
-	timer->stop_time = 0.0f;
+	timer->stop_time = 0;
 	timer->is_stopped = 0;
 }
 
@@ -61,7 +61,7 @@ void StartTimer(Timer* timer)
 
 	timer->paused_time += (start_time - timer->stop_time);
 	timer->prev_time = start_time;
-	timer->stop_time = 0.0f;
+	timer->stop_time = 0;
 	timer->is_stopped = 0;
 }
 

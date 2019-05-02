@@ -1,25 +1,10 @@
 #pragma once
 
-/*
-Types
-*/
-typedef struct _Vector2
-{
-	float x, y;
-} Vector2;
-
-/*
-Global Variables
-
-*/
+#include "type.h"
 
 /*
 Functions
 */
-int Startup();
-void Shutdown();
-void GameLoop();
-
-const char* KeyState();
-
-void Gotoxy(int x, int y);
+int StartupGame();
+void ShutdownGame();
+void RunningGame();
