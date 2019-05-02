@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <Windows.h>
 
-const Timer* InitTimer()
+Timer* CreateTimer()
 {
 	Timer* timer;
 
@@ -18,7 +18,7 @@ const Timer* InitTimer()
 	return timer;
 }
 
-void CloseTimer(Timer** timer)
+void DestroyTimer(Timer** timer)
 {
 	free(*timer);
 	(*timer) = NULL;
@@ -77,7 +77,7 @@ void PauseTimer(Timer* timer)
 	timer->is_stopped = 1;
 }
 
-float TotalTime(Timer* timer)
+float GetTotalTime(Timer* timer)
 {
 	if (timer->is_stopped)
 		return (float)(((timer->stop_time - timer->paused_time) - timer->base_time) * timer->seconds_per_count);

@@ -14,8 +14,8 @@ typedef struct _Timer
 	int is_stopped;
 } Timer;
 
-const Timer* CreateTimer();
-void RemoveTimer(Timer** timer);
+Timer* CreateTimer();
+void DestroyTimer(Timer** timer);
 
 void TickTimer(Timer* timer);
 

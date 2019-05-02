@@ -1,10 +1,10 @@
-#include "game.h"
+#include "timer.h"
 
 int main(void)
 {
-	if (Startup())
-		GameLoop();
-	Shutdown();
+	const Timer* game_timer = CreateTimer();
+
+	
 
 	return 0;
 }

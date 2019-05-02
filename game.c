@@ -14,7 +14,6 @@
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 
-static Timer game_timer;
 static char keys[MAX_KEYS];
 
 static Player* player;
@@ -26,66 +25,53 @@ void Input();
 void Update();
 void Render();
 
-
-int Startup()
-{
-	player = (Player*)malloc(sizeof(Player));
-
-	if (!InitTimer(&game_timer))
-	{
-		fprintf(stderr, "InitTimer() failed");
-		return 0;
-	}
-}
-
-void Shutdown()
-{
-	CloseTimer(&game_timer);
-	free(player);
-}
-
-void GameLoop()
-{
-	ResetTimer(game_timer);
-
-	while (1)
-	{
-		Input();
-		Update();
-		Render();
-	}
-}
-
-void Input()
-{
-	memset(keys, 0, sizeof(keys));
-
-	if (_kbhit())
-	{
-		int key = _getch();
-		
-		if (key == KEY_ARROW)
-		{
-			key = _getch();
-		}
-		else
-		{
-
-		}
-	}
-}
-
-void Update()
-{
-	TickTimer(game_timer);
-	float delta_time = DeltaTime(game_timer);
-
-	UpdatePlayer(player, delta_time);
-}
-
-void Render()
-{
-	ClearFrameBuffer();
-	RenderPlayer(player);
-	SwapFrameBuffer();
-}
+//void Shutdown()
+//{
+//	CloseTimer(&game_timer);
+//	free(player);
+//}
+//
+//void GameLoop()
+//{
+//
+//	while (1)
+//	{
+//		Input();
+//		Update();
+//		Render();
+//	}
+//}
+//
+//void Input()
+//{
+//	memset(keys, 0, sizeof(keys));
+//
+//	if (_kbhit())
+//	{
+//		int key = _getch();
+//		
+//		if (key == KEY_ARROW)
+//		{
+//			key = _getch();
+//		}
+//		else
+//		{
+//
+//		}
+//	}
+//}
+//
+//void Update()
+//{
+//	TickTimer(game_timer);
+//	float delta_time = DeltaTime(game_timer);
+//
+//	UpdatePlayer(player, delta_time);
+//}
+//
+//void Render()
+//{
+//	ClearFrameBuffer();
+//	RenderPlayer(player);
+//	SwapFrameBuffer();
+//}
