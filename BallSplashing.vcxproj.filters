@@ -23,13 +23,13 @@
     <ClCompile Include="timer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="graphics.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="input.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="stage.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -43,9 +43,6 @@
     <ClInclude Include="timer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="graphics.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="input.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -53,6 +50,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="stage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

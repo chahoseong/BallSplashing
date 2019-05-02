@@ -1,9 +1,17 @@
 #include "player.h"
 #include "game.h"
-#include "graphics.h"
+#include "renderer.h"
 
 #include <stdio.h>
 #include <Windows.h>
+
+typedef struct Player
+{
+	Vector2 force;
+	Vector2 prev_position;
+	Vector2 curr_position;
+	Vector2 max_force;
+} Player;
 
 Player* CreatePlayer()
 {
@@ -16,10 +24,9 @@ Player* CreatePlayer()
 	return player;
 }
 
-void DestroyPlayer(Player** player)
+void DestroyPlayer(Player* player)
 {
-	free(*player);
-	*player = NULL;
+	free(player);
 }
 
 void InputPlayer(Player* player, const char* keys)

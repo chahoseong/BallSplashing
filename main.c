@@ -152,13 +152,14 @@ int main(void)
 			}
 		}
 
+		float delta_time = GetDeltaTime(game_timer);
 		// °»½Å
-		player->force.y += gravity * game_timer->delta_time;
+		player->force.y += gravity * delta_time;
 
 		Vector2 acceleration = { player->force.x, player->force.y };
-		Vector2 velocity = { acceleration.x * game_timer->delta_time, acceleration.y * game_timer->delta_time };
-		Vector2 next_position = { player->curr_position.x + velocity.x * game_timer->delta_time,
-			player->curr_position.y + 10 * velocity.y * game_timer->delta_time };
+		Vector2 velocity = { acceleration.x * delta_time, acceleration.y * delta_time };
+		Vector2 next_position = { player->curr_position.x + velocity.x * delta_time,
+			player->curr_position.y + 10 * velocity.y * delta_time };
 
 		if ((next_position.x >= 0 && next_position.x < 21) && (next_position.y >= 0 && next_position.y < 16))
 		{
@@ -195,7 +196,7 @@ int main(void)
 		}
 		else
 		{
-			test_timer += game_timer->delta_time;
+			test_timer += delta_time;
 		}
 
 

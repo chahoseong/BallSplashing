@@ -149,7 +149,7 @@
     <ClCompile Include="game.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="graphics.c">
+    <ClCompile Include="renderer.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="input.c">
@@ -168,7 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
-    <ClInclude Include="graphics.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="stage.h" />

@@ -3,11 +3,25 @@
 #include <stdlib.h>
 #include <Windows.h>
 
+typedef struct Timer
+{
+	double seconds_per_count;
+	float delta_time;
+
+	__int64 base_time;
+	__int64 stop_time;
+	__int64 paused_time;
+	__int64 prev_time;
+	__int64 curr_time;
+
+	int is_stopped;
+} Timer;
+
 Timer* CreateTimer()
 {
 	Timer* timer;
 
-	timer = (Timer*)malloc(sizeof(struct _Timer));
+	timer = (Timer*)malloc(sizeof(struct Timer));
 	if (!timer)
 		return NULL;
 
@@ -18,13 +32,12 @@ Timer* CreateTimer()
 	return timer;
 }
 
-void DestroyTimer(Timer** timer)
+void DestroyTimer(Timer* timer)
 {
-	free(*timer);
-	(*timer) = NULL;
+	free(timer);
 }
 
-void TickTimer(Timer* timer)
+void Tick(Timer* timer)
 {
 	if (timer->is_stopped)
 	{
@@ -75,6 +88,11 @@ void PauseTimer(Timer* timer)
 
 	timer->stop_time = stop_time;
 	timer->is_stopped = 1;
+}
+
+float GetDeltaTime(Timer* timer)
+{
+	return timer->delta_time;
 }
 
 float GetTotalTime(Timer* timer)
