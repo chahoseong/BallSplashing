@@ -3,46 +3,28 @@
 #include <stdlib.h>
 #include <Windows.h>
 
-struct _Timer
+const Timer* InitTimer()
 {
-	double seconds_per_count;
-	float delta_time;
+	Timer* timer;
 
-	__int64 base_time;
-	__int64 stop_time;
-	__int64 paused_time;
-	__int64 prev_time;
-	__int64 curr_time;
-
-	int is_stopped;
-};
-
-typedef struct _Timer* Timer;
-
-int InitTimer(Timer* new_timer)
-{
-	Timer timer;
-
-	timer = (Timer)malloc(sizeof(struct _Timer));
-	if (timer == NULL)
-		return 0;
+	timer = (Timer*)malloc(sizeof(struct _Timer));
+	if (!timer)
+		return NULL;
 
 	__int64 counts_per_second;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&counts_per_second);
 	timer->seconds_per_count = 1.0 / counts_per_second;
 
-	*new_timer = timer;
-
-	return 1;
+	return timer;
 }
 
-void CloseTimer(Timer* timer)
+void CloseTimer(Timer** timer)
 {
 	free(*timer);
 	(*timer) = NULL;
 }
 
-void TickTimer(Timer timer)
+void TickTimer(Timer* timer)
 {
 	if (timer->is_stopped)
 	{
@@ -58,7 +40,7 @@ void TickTimer(Timer timer)
 	timer->prev_time = timer->curr_time;
 }
 
-void ResetTimer(Timer timer)
+void ResetTimer(Timer* timer)
 {
 	__int64 curr_time;
 	QueryPerformanceCounter((LARGE_INTEGER*)&curr_time);
@@ -69,7 +51,7 @@ void ResetTimer(Timer timer)
 	timer->is_stopped = 0;
 }
 
-void StartTimer(Timer timer)
+void StartTimer(Timer* timer)
 {
 	if (!timer->is_stopped)
 		return;
@@ -83,7 +65,7 @@ void StartTimer(Timer timer)
 	timer->is_stopped = 0;
 }
 
-void PauseTimer(Timer timer)
+void PauseTimer(Timer* timer)
 {
 	if (timer->is_stopped)
 		return;
@@ -95,12 +77,7 @@ void PauseTimer(Timer timer)
 	timer->is_stopped = 1;
 }
 
-float DeltaTime(Timer timer)
-{
-	return timer->delta_time;
-}
-
-float TotalTime(Timer timer)
+float TotalTime(Timer* timer)
 {
 	if (timer->is_stopped)
 		return (float)(((timer->stop_time - timer->paused_time) - timer->base_time) * timer->seconds_per_count);

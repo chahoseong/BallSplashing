@@ -1,16 +1,26 @@
 #pragma once
 
-// opaque type
-typedef void* Timer;
+typedef struct _Timer
+{
+	double seconds_per_count;
+	float delta_time;
 
-int InitTimer(Timer* new_timer);
-void CloseTimer(Timer* timer);
+	__int64 base_time;
+	__int64 stop_time;
+	__int64 paused_time;
+	__int64 prev_time;
+	__int64 curr_time;
 
-void TickTimer(Timer timer);
+	int is_stopped;
+} Timer;
 
-void ResetTimer(Timer timer);
-void StartTimer(Timer timer);
-void PauseTimer(Timer timer);
+const Timer* CreateTimer();
+void RemoveTimer(Timer** timer);
 
-float DeltaTime(Timer timer);
-float TotalTime(Timer timer);
+void TickTimer(Timer* timer);
+
+void ResetTimer(Timer* timer);
+void StartTimer(Timer* timer);
+void PauseTimer(Timer* timer);
+
+float GetTotalTime(Timer* timer);
