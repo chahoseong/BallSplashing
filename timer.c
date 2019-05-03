@@ -37,7 +37,7 @@ void DestroyTimer(Timer* timer)
 	free(timer);
 }
 
-void Tick(Timer* timer)
+void TickTimer(Timer* timer)
 {
 	if (timer->is_stopped)
 	{

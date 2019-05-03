@@ -1,18 +1,18 @@
 #pragma once
 
-#include <stdio.h>
+#include "renderer.h"
+#include "object.h"
 
-enum ObjectType
-{
-	GOAL = -1,
-	EMPTY = 0,
-	WALL = 1,
-	ROCK = 2,
-};
+struct Stage;
+typedef struct Stage Stage;
 
-//typedef struct _Object
-//{
-//	
-//} Object;
+Stage* LoadStage(const char* filename);
+void UnloadStage(Stage* stage);
 
-wchar_t* LoadStage(const char* name);
+int GetStageWidth(Stage* stage);
+int GetStageHeight(Stage* stage);
+
+void SetStageAt(Stage* stage, int x, int y, ObjectType type);
+Object GetStageAt(Stage* stage, int x, int y);
+
+void DrawStage(Renderer* renderer, Stage* stage);

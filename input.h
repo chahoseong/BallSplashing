@@ -1,4 +1,4 @@
 #pragma once
 
-void PollInputEvent();
-const char* GetKeys();
+void PollInput();
+const char* GetKeyboard();

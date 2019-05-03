@@ -1,14 +1,13 @@
 #pragma once
 
-#include "game.h"
-#include <stdio.h>
+#include "type.h"
+#include "renderer.h"
 
-struct Player;
-typedef struct Player Player;
+typedef struct Player
+{
+	Vector2 force;
+	Vector2 position;
+	wchar_t rendering_character;
+} Player;
 
-Player* CreatePlayer();
-void DestroyPlayer(Player* player);
-
-void InputPlayer(Player* player, const char* keys);
-void UpdatePlayer(Player* player, float delta_time);
-void RenderPlayer(Player* player);
+void DrawPlayer(Renderer* renderer, const Player* player);

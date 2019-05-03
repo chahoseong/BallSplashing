@@ -4,9 +4,16 @@
 #include <stdio.h>
 #include <Windows.h>
 
+typedef struct Pixel
+{
+	wchar_t ch;
+	WORD color;
+} Pixel;
+
 typedef struct Renderer
 {
-	wchar_t* buffer;
+	Pixel* buffer;
+	WORD draw_color;
 	int width;
 	int height;
 } Renderer;
@@ -37,7 +44,7 @@ Renderer* CreateRenderer(int width, int height)
 	if (!renderer)
 		return NULL;
 
-	renderer->buffer = (wchar_t*)malloc(sizeof(wchar_t) * width * height);
+	renderer->buffer = (Pixel*)malloc(sizeof(Pixel) * width * height);
 	if (!renderer->buffer)
 		return NULL;
 
@@ -45,7 +52,7 @@ Renderer* CreateRenderer(int width, int height)
 	renderer->height = height;
 
 	HideConsoleCursor();
-	memset(renderer->buffer, 0, sizeof(wchar_t) * width * height);
+	memset(renderer->buffer, 0, sizeof(Pixel) * width * height);
 
 	return renderer;
 }
@@ -67,9 +74,26 @@ int GetRenderSize(Renderer* renderer, int* width, int* height)
 	return 1;
 }
 
+void SetRenderDrawColor(Renderer* renderer, int foreground, int background)
+{
+	renderer->draw_color = (background << 4) | foreground;
+}
+
+void RenderClear(Renderer* renderer, wchar_t character)
+{
+	for (int y = 0; y < renderer->height; ++y)
+	{
+		for (int x = 0; x < renderer->width; ++x)
+			renderer->buffer[y * renderer->width + x].ch = character;
+	}
+}
+
 void RenderDraw(Renderer* renderer, wchar_t character, int x, int y)
 {
-	renderer->buffer[y * renderer->width + x] = character;
+	int index = y * renderer->width + x;
+
+	renderer->buffer[index].ch = character;
+	renderer->buffer[index].color = renderer->draw_color;
 }
 
 void RenderPresent(Renderer* renderer)
@@ -79,8 +103,12 @@ void RenderPresent(Renderer* renderer)
 	for (int y = 0; y < renderer->height; ++y)
 	{
 		for (int x = 0; x < renderer->width; ++x)
-			printf("%lc", renderer->buffer[y * renderer->width + x]);
-		printf("%lc", L'\n');
+		{
+			int index = y * renderer->width + x;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), renderer->buffer[index].color);
+			printf("%2lc", renderer->buffer[index].ch);
+		}
+		putchar('\n');
 	}
 }
 

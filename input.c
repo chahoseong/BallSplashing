@@ -16,7 +16,7 @@ enum KeyCode
 
 static char keys[MAX_KEYS];
 
-void PollInputEvent()
+void PollInput()
 {
 	memset(keys, 0, MAX_KEYS);
 
@@ -49,7 +49,7 @@ void PollInputEvent()
 	}
 }
 
-const char* GetKeys()
+const char* GetKeyboard()
 {
 	return keys;
 }
