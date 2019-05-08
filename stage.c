@@ -1,7 +1,6 @@
 #include "stage.h"
 
 #include "stage.h"
-#include "object.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -9,9 +8,10 @@
 
 typedef struct Stage
 {
-	Object* data;
+	ObjectType* data;
 	int width;
 	int height;
+	Vector2 start_position;
 } Stage;
 
 Stage* LoadStage(const char* filename)
@@ -26,12 +26,12 @@ Stage* LoadStage(const char* filename)
 	if (!stage)
 		return NULL;
 
-	fscanf_s(fp, "%d", &stage->width);
-	fscanf_s(fp, "%d", &stage->height);
+	fscanf_s(fp, "%d%d", &stage->width, &stage->height);
+	fscanf_s(fp, "%d%d", &stage->start_position.x, &stage->start_position.y);
 
-	int total_size = sizeof(Object) * stage->width * stage->height;
+	int total_size = sizeof(ObjectType) * stage->width * stage->height;
 	
-	stage->data = (Object*)malloc(total_size);
+	stage->data = (ObjectType*)malloc(total_size);
 	if (!stage)
 		return NULL;
 
@@ -48,23 +48,39 @@ Stage* LoadStage(const char* filename)
 				element = fgetc(fp);
 			} while (isspace(element));
 
-			Object object;
-			object.type = element - '0';
+			element -= '0';
+			int index = y * stage->width + x;
 
-			switch (object.type)
+			// stage->data[y * stage->width + x] = (ObjectType)element;
+			switch (element)
 			{
 			case EMPTY:
-				object.rendering_character = L' ';
+				stage->data[index] = EMPTY;
 				break;
 			case WALL:
-				object.rendering_character = L'¡á';
+				stage->data[index] = WALL;
 				break;
 			case ROCK:
-				object.rendering_character = L'¢È';
+				stage->data[index] = ROCK;
 				break;
+			case BOMB:
+				stage->data[index] = BOMB;
+				break;
+			case JUMP:
+				stage->data[index] = JUMP;
+				break;
+			case DASH_LEFT:
+				stage->data[index] = DASH_LEFT;
+				break;
+			case DASH_RIGHT:
+				stage->data[index] = DASH_RIGHT;
+				break;
+			case INVALID:
+				stage->data[index] = INVALID;
+				break;
+			case GOAL:
+				stage->data[index] = GOAL;
 			}
-
-			stage->data[y * stage->width + x] = object;
 		}
 	}
 
@@ -89,32 +105,20 @@ int GetStageHeight(Stage* stage)
 	return stage->height;
 }
 
-void SetStageAt(Stage* stage, int x, int y, ObjectType type)
+Vector2 GetPlayerStartPosition(Stage* stage)
 {
-	stage->data[y * stage->width + x].type = type;
-
-	switch (type)
-	{
-	case EMPTY:
-		stage->data[y * stage->width + x].rendering_character = L' ';
-		break;
-	case WALL:
-		stage->data[y * stage->width + x].rendering_character = L'¡á';
-		break;
-	case ROCK:
-		stage->data[y * stage->width + x].rendering_character = L'¢È';
-		break;
-	}
+	return stage->start_position;
 }
 
-Object GetStageAt(Stage* stage, int x, int y)
+void SetStageAt(Stage* stage, int x, int y, ObjectType type)
+{
+	stage->data[y * stage->width + x] = type;
+}
+
+ObjectType GetStageAt(Stage* stage, int x, int y)
 {
 	if (x < 0 || x >= stage->width || y < 0 || y >= stage->height)
-	{
-		Object object;
-		object.type = INVALID_OBJECT;
-		return object;
-	}
+		return INVALID;
 
 	return stage->data[y * stage->width + x];
 }
@@ -124,6 +128,31 @@ void DrawStage(Renderer* renderer, Stage* stage)
 	for (int y = 0; y < stage->height; ++y)
 	{
 		for (int x = 0; x < stage->width; ++x)
-			RenderDraw(renderer, stage->data[y * stage->width + x].rendering_character, x, y);
+		{
+			switch (stage->data[y * stage->width + x])
+			{
+			case EMPTY:
+				RenderDraw(renderer, L' ', x, y);
+				break;
+			case WALL:
+				RenderDraw(renderer, L'¡á', x, y);
+				break;
+			case ROCK:
+				RenderDraw(renderer, L'¢È', x, y);
+				break;
+			case BOMB:
+				RenderDraw(renderer, L'¢Í', x, y);
+				break;
+			case JUMP:
+				RenderDraw(renderer, L'¢Ã', x, y);
+				break;
+			case DASH_LEFT:
+				RenderDraw(renderer, L'¡ç', x, y);
+				break;
+			case DASH_RIGHT:
+				RenderDraw(renderer, L'¡æ', x, y);
+				break;
+			}
+		}
 	}
 }

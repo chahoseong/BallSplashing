@@ -1,10 +1,11 @@
 #pragma once
 
-#include "type.h"
+struct Game;
+typedef struct Game Game;
 
-/*
-Functions
-*/
-int StartupGame();
-void ShutdownGame();
-void RunningGame();
+Game* CreateGame();
+void DestroyGame(Game* game);
+
+int StartupGame(Game* game);
+void ShutdownGame(Game* game);
+void RunGame(Game* game);

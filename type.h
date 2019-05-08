@@ -20,7 +20,7 @@ typedef enum Color
 	WHITE,
 } Color;
 
-typedef struct _Vector2
+typedef struct Vector2
 {
 	int x, y;
 } Vector2;

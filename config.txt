@@ -1,0 +1,3 @@
+update-time 0.1
+gravity 3
+stage-count 4
