@@ -1,4 +1,4 @@
 # BallSplashing
 
-<Toy Project>
+[Toy Project]
 Windows console game with C
