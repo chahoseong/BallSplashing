@@ -112,7 +112,6 @@ int StartupGame(Game* game)
 
 	game->is_running = 1;
 
-
 	OpenAudio(L"Audio\\bounce.mp3", L"bounce");
 	OpenAudio(L"Audio\\jump.mp3", L"jump");
 	OpenAudio(L"Audio\\dash.mp3", L"dash");
