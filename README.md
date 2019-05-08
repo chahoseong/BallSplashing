@@ -1,3 +1,5 @@
 # BallSplashing
 
-Windows Console Game With C
+[Toy Project]
+
+Windows console game with C
